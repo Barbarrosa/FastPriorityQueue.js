@@ -207,7 +207,11 @@ describe('FastPriorityQueue', function() {
     }
 
     var removedItems = x.removeMany(callback);
-    if (removedItems.length !== 2 || x.size !== 5 || x.array.some(item => item.removeCriterion)) {
+    if (
+      removedItems.length !== 2 ||
+      x.size !== 5 ||
+      x.array.slice(0, x.size).some(item => item.removeCriterion)
+      ) {
       console.log('removed: ' + JSON.stringify(removedItems));
       console.log('remaining:');
       while (!x.isEmpty()) {
