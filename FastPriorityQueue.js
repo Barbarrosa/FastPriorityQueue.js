@@ -177,35 +177,30 @@ FastPriorityQueue.prototype.removeMany = function(callback, limit) {
   }
   limit = limit ? Math.min(limit, this.size) : this.size;
 
-  // Create a queue to hold the items we want to keep
-  var fpq = new FastPriorityQueue(this.compare);
-
-  // Prepare a fixture to hold the approximate number of results
+  // Prepare the results container to hold up to the results limit
   var resultSize = 0;
   var result = new Array(limit);
+
+  // Prepare a temporary array to hold items we'll traverse through and need to keep
+  var tmpSize = 0;
+  var tmp = new Array(this.size);
+
   while (resultSize < limit && !this.isEmpty()) {
     // Dequeue items into either the results or our temporary queue
     var item = this.poll();
     if (callback(item)) {
       result[resultSize++] = item;
     } else {
-      fpq.add(item);
+      tmp[tmpSize++] = item;
     }
   }
   // Update the result array with the exact number of results
   result.length = resultSize;
 
-  // Replace the end of the original queue's array w/ the temporary
-  // one and heapify it
-  Array.prototype.splice.apply(
-    this.array,
-    [
-      this.size,
-      fpq.size
-    ].concat(fpq.array)
-  );
-  this.array.length = this.size + fpq.size;
-  this.heapify(this.array);
+  // Re-add all the items we can keep
+  for (var i = 0; i < tmpSize; i++) {
+    this.add(tmp[i]);
+  }
 
   return result;
 };
