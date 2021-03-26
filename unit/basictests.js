@@ -177,7 +177,7 @@ describe('FastPriorityQueue', function() {
     }
   });
 
-  it('removeMany remove all - check all items', function() {
+  it('removeMany remove some - check all items', function() {
     var saw2 = false;
     var removed2 = false;
 
