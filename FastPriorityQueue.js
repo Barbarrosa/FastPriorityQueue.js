@@ -186,7 +186,7 @@ FastPriorityQueue.prototype.removeMany = function(callback, limit) {
   var tmp = new Array(this.size);
 
   while (resultSize < limit && !this.isEmpty()) {
-    // Dequeue items into either the results or our temporary queue
+    // Dequeue items into either the results or our temporary array
     var item = this.poll();
     if (callback(item)) {
       result[resultSize++] = item;
@@ -198,8 +198,9 @@ FastPriorityQueue.prototype.removeMany = function(callback, limit) {
   result.length = resultSize;
 
   // Re-add all the items we can keep
-  for (var i = 0; i < tmpSize; i++) {
-    this.add(tmp[i]);
+  var i = 0;
+  while (i < tmpSize) {
+    this.add(tmp[i++]);
   }
 
   return result;
