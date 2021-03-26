@@ -195,22 +195,17 @@ FastPriorityQueue.prototype.removeMany = function(callback, limit) {
   // Update the result array with the exact number of results
   result.length = resultSize;
 
-  // Between the temporary and current queue, transfer the smaller one
-  // into the bigger one and keep the bigger one
-  var source;
-  var target;
-  if (fpq.size > this.size) {
-    source = this;
-    target = fpq;
-  } else {
-    source = fpq;
-    target = this;
-  }
-  for (var i = source.size - 1; i > -1; i--) {
-    target.add(source[i]);
-  }
-  this.array = target.array;
-  this.size = target.size;
+  // Replace the end of the original queue's array w/ the temporary
+  // one and heapify it
+  Array.prototype.splice.apply(
+    this.array,
+    [
+      this.size,
+      fpq.size
+    ].concat(fpq.array)
+  );
+  this.array.length = this.size + fpq.size;
+  this.heapify(this.array);
 
   return result;
 };
